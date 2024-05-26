@@ -3,8 +3,11 @@
 % following script
 
 %Running test case for parameter fitting
-sigma = 0.06; %noise term
-d = 0.25;
+%% adaptation analysis
+
+%% Example code of tweaking parameters for model
+sigma = 0.1; %noise term
+d = 0.05;
 a=1;
 sys = StochasticWilsonWTA_Tash_Sigmoid_adapt(sigma,d,a); %change c params. as adaptation
 %gui open
@@ -31,105 +34,6 @@ for dt = -1*TRprepost+1:TRprepost
 end
 %     figure
 %     histogram(MSD)
-
-%% Sdaptation param. changing between 0.25-0.4
-sigma = 0.05; %noise param
-d = 0.25; % adaptation
-a = 1; %bias the e-population
-downsam = 1000;
-nTR = 20;
-[nrgSig_adapt_model,ts_adapt,sys,f] = adaptation_analysis(sigma,d,a,downsam,nTR);
-
-%save model variables and associated params. 
-savefilename = sprintf('%s%d%s%d%s','model_adapt_d_',d,'_a_',a,'.mat');
-save([savefilename],'sys','ts_adapt','nrgSig_adapt_model');
-
-figname = sprintf('%s%d%s%d%s','adapt_d_',d,'_sigma_',sigma,'.fig');
-savefig(f,figname)
-
-%create figure plot for the model
-
-figure
-set(gcf,'Color','w');
-%load('model_adapt_d_2.000000e-01_a_1.mat')
-avg_nrgSig_1=mean(nrgSig_adapt_model);
-plot(avg_nrgSig_1,'Color',[0.4,0.7,0.5],'LineWidth',3) %green colour is adapt 0.25
-%load('model_adapt_d_4.000000e-01_a_1.mat')
-%avg_nrgSig_3=mean(nrgSig_adapt_model);
-hold on
-plot(avg_nrgSig_3,'Color',[1.0,0.7,0.0],'LineWidth',3) %orange is adapt 0.4
-
-
-%% Change in excitability
-sigma = 0.05; %noise param
-d = 0.4; % adaptation
-a = 1.3; %bias the e-population
-downsam = 1000;
-nTR = 20;
-[nrgSig_adapt_model,ts_adapt,sys,f] = adaptation_analysis(sigma,d,a,downsam,nTR);
-
-%save model variables and associated params. 
-savefilename = sprintf('%s%d%s%d%s','model_adapt_d_',d,'_a_',a,'.mat');
-save([savefilename],'sys','ts_adapt','nrgSig_adapt_model');
-
-figname = sprintf('%s%d%s%d%s%d%s','adapt_d_',d,'_sigma_',sigma,'_excit_',a,'.fig');
-savefig(f,figname)
-
-%create figure plot for the model
-
-figure
-set(gcf,'Color','w');
-load('model_adapt_d_4.000000e-01_a_1.300000e+00.mat')
-avg_nrgSig_1=mean(nrgSig_adapt_model);
-plot(avg_nrgSig_1,'Color',[0.4,0.7,0.5],'LineWidth',3) %green colour is decreased adaptation
-load('model_adapt_d_4.000000e-01_a_1.100000e+00.mat')
-avg_nrgSig_2=mean(nrgSig_adapt_model);
-hold on
-plot(avg_nrgSig_2,'Color',[0.8,0.7,0.2],'LineWidth',3) %inbetween is 1.
-load('model_adapt_d_4.000000e-01_a_9.000000e-01.mat')
-avg_nrgSig_3=mean(nrgSig_adapt_model);
-hold on
-plot(avg_nrgSig_3,'Color',[1.0,0.7,0.0],'LineWidth',3) %orange is 0.9 excit
-% log these values
-figure
-set(gcf,'Color','w');
-%load('model_adapt_d_4.000000e-01_a_1.300000e+00.mat')
-log_nrgSig_1 = log(avg_nrgSig_1);
-plot(log_nrgSig_1,'Color',[0.4,0.7,0.5],'LineWidth',3) %green colour is decreased adaptation
-%load('model_adapt_d_4.000000e-01_a_1.100000e+00.mat')
-log_nrgSig_2 = log(avg_nrgSig_2);
-hold on
-plot(log_nrgSig_2,'Color',[0.8,0.7,0.2],'LineWidth',3) %inbetween is 1.
-%load('model_adapt_d_4.000000e-01_a_9.000000e-01.mat')
-log_nrgSig_3 = log(avg_nrgSig_3);
-hold on
-plot(log_nrgSig_3,'Color',[1.0,0.7,0.0],'LineWidth',3) %orange is 0.9 excit
-
-
-
-
-%% Change both adaptibility & excitation
-sigma = 0.05; %noise param
-d = 0.25; % adaptation
-a = 1.3; %bias the e-population
-downsam = 1000;
-nTR = 20;
-[nrgSig_adapt_model,ts_adapt,sys,f] = adaptation_analysis(sigma,d,a,downsam,nTR);
-
-%save model variables and associated params. 
-savefilename = sprintf('%s%d%s%d%s','model_adapt_d_',d,'_a_',a,'.mat');
-save([savefilename],'sys','ts_adapt','nrgSig_adapt_model');
-
-figname = sprintf('%s%d%s%d%s%d%s','adapt_d_',d,'_sigma_',sigma,'_excit_',a,'.fig');
-savefig(f,figname)
-
-%create figure plot for the model
-figure
-set(gcf,'Color','w');
-avg_nrgSig_1=mean(nrgSig_adapt_model);
-plot(avg_nrgSig_1,'Color',[0.4,0.7,0.5],'LineWidth',3)
-hold on
-plot(avg_nrgSig_2,'Color',[1.0,0.7,0.0],'LineWidth',3) %is 1
 
 %% Attractor landscape
 nTR = 20; % number displacement into time future
@@ -181,6 +85,205 @@ ylabel('MSD')
 zlabel('MSD  energy')
 colormap(grad)
 title('Adaptaion Er = 1.5 and El = 0.2')
+
+
+
+%% Run the analysis with adaptation param. changing between 0.5 - 1
+%1. Adaptation Reduced
+
+% adaptation = 0.05
+sigma = 0.1; %noise param
+d = 0.05; % adaptation
+a = 1; %bias the e-population
+downsam = 1000;
+nTR = 20;
+[nrgSig_adapt_1,ts_adapt_1,sys_adapt_1,f] = adaptation_analysis(sigma,d,a,downsam,nTR);
+
+%save model variables and associated params. 
+savefilename = sprintf('%s%d%s%d%s','model_adapt_d_',d,'_a_',a,'.mat');
+save([savefilename],'sys','ts_adapt_1','nrgSig_adapt_1');
+
+figname = sprintf('%s%d%s%d%s','adapt_d_',d,'_sigma_',sigma,'.fig');
+savefig(f,figname)
+
+%adaptation =0.25
+sigma = 0.1; %noise param
+d = 0.25; % adaptation
+a = 1; %bias the e-population
+downsam = 1000;
+nTR = 20;
+[nrgSig_adapt_2,ts_adapt_2,sys_adapt_2,f] = adaptation_analysis(sigma,d,a,downsam,nTR);
+
+%save model variables and associated params. 
+savefilename = sprintf('%s%d%s%d%s','model_adapt_d_',d,'_a_',a,'.mat');
+save([savefilename],'sys','ts_adapt_2','nrgSig_adapt_2');
+
+
+
+
+%create figure plot for the model
+
+figure
+set(gcf,'Color','w');
+%load('model_adapt_d_2.000000e-01_a_1.mat')
+avg_nrgSig_1=mean(nrgSig_adapt_1);
+plot(avg_nrgSig_1,'Color',[0.4,0.7,0.5],'LineWidth',3) %green colour is adapt 0.05
+%load('model_adapt_d_4.000000e-01_a_1.mat')
+%avg_nrgSig_3=mean(nrgSig_adapt_model);
+hold on
+avg_nrgSig_2=mean(nrgSig_adapt_2);
+plot(avg_nrgSig_2,'Color',[0.9,0.9,0.9],'LineWidth',3) %grey is adapt 0.25
+
+
+%% Change in excitability
+%1. Excitation 0.9
+sigma = 0.1; %noise param
+d = 0.05; % adaptation
+a = 0.9; %bias the e-population
+downsam = 1000;
+nTR = 20;
+[nrgSig_excite_1,ts_excite_1,sys,f] = adaptation_analysis(sigma,d,a,downsam,nTR);
+
+%save model variables and associated params. 
+savefilename = sprintf('%s%d%s%d%s','model_adapt_d_',d,'_a_',a,'.mat');
+save([savefilename],'sys','ts_excite_1','nrgSig_excite_1');
+
+figname = sprintf('%s%d%s%d%s%d%s','adapt_d_',d,'_sigma_',sigma,'_excit_',a,'.fig');
+savefig(f,figname)
+% Excitation 1.1
+sigma = 0.1; %noise param
+d = 0.05; % adaptation
+a = 1.1; %bias the e-population
+downsam = 1000;
+nTR = 20;
+[nrgSig_excite_2,ts_excite_2,sys,f] = adaptation_analysis(sigma,d,a,downsam,nTR);
+
+%save model variables and associated params. 
+savefilename = sprintf('%s%d%s%d%s','model_adapt_d_',d,'_a_',a,'.mat');
+save([savefilename],'sys','ts_excite_2','nrgSig_excite_2');
+
+%create figure plot for the model
+
+figure
+set(gcf,'Color','w');
+%load('model_adapt_d_2.000000e-01_a_1.mat')
+avg_nrgSig_1=mean(nrgSig_excite_1);
+plot(avg_nrgSig_1,'Color',[0.9,0.9,0.9],'LineWidth',3) %grey colour is excite 0.9
+%load('model_adapt_d_4.000000e-01_a_1.mat')
+%avg_nrgSig_3=mean(nrgSig_adapt_model);
+hold on
+avg_nrgSig_2=mean(nrgSig_excite_2);
+plot(avg_nrgSig_2,'Color',[0.4,0.7,0.5],'LineWidth',3) %green is excite 1.1
+
+
+
+
+%% Change both adaptibility & excitation
+sigma = 0.1; %noise param
+d = 0.25; % adaptation
+a = 0.9; %bias the e-population
+downsam = 1000;
+nTR = 20;
+[nrgSig_adapt_excite_1,ts_adapt_excite_1,sys,f] = adaptation_analysis(sigma,d,a,downsam,nTR);
+
+%save model variables and associated params. 
+savefilename = sprintf('%s%d%s%d%s','model_adapt_d_',d,'_a_',a,'.mat');
+save([savefilename],'sys','ts_adapt','nrgSig_adapt_model');
+
+figname = sprintf('%s%d%s%d%s%d%s','adapt_d_',d,'_sigma_',sigma,'_excit_',a,'.fig');
+savefig(f,figname)
+%increase excitation and decrease adaptation
+sigma = 0.1; %noise param
+d = 0.05; % adaptation
+a = 1.1; %bias the e-population
+downsam = 1000;
+nTR = 20;
+[nrgSig_adapt_excite_2,ts_adapt_excite_2,sys,f] = adaptation_analysis(sigma,d,a,downsam,nTR);
+
+
+%create figure plot for the model
+
+figure
+set(gcf,'Color','w');
+avg_nrgSig_1=mean(nrgSig_adapt_excite_1);
+plot(avg_nrgSig_1,'Color',[0.9,0.9,0.9],'LineWidth',3)
+hold on
+avg_nrgSig_2=mean(nrgSig_adapt_excite_2);
+plot(avg_nrgSig_2,'Color',[0.4,0.7,0.5],'LineWidth',3) %adapt is 0.4 and excit is 1
+
+
+
+%create figure plot for the model
+
+figure
+set(gcf,'Color','w');
+%load('model_adapt_d_4.000000e-01_a_1.300000e+00.mat')
+avg_nrgSig_1=mean(nrgSig_adapt_model);
+plot(avg_nrgSig_1,'Color',[0.4,0.7,0.5],'LineWidth',3) %green colour is decreased adaptation
+%load('model_adapt_d_4.000000e-01_a_1.100000e+00.mat')
+avg_nrgSig_2=mean(nrgSig_adapt_model);
+hold on
+plot(avg_nrgSig_2,'Color',[0.8,0.7,0.2],'LineWidth',3) %inbetween is 1.
+%load('model_adapt_d_4.000000e-01_a_9.000000e-01.mat')
+avg_nrgSig_3=mean(nrgSig_adapt_model);
+hold on
+plot(avg_nrgSig_3,'Color',[1.0,0.7,0.0],'LineWidth',3) %orange is 0.9 excit
+% log these values
+figure
+set(gcf,'Color','w');
+%load('model_adapt_d_4.000000e-01_a_1.300000e+00.mat')
+log_nrgSig_1 = log(avg_nrgSig_1);
+plot(log_nrgSig_1,'Color',[0.4,0.7,0.5],'LineWidth',3) %green colour is decreased adaptation
+%load('model_adapt_d_4.000000e-01_a_1.100000e+00.mat')
+log_nrgSig_2 = log(avg_nrgSig_2);
+hold on
+plot(log_nrgSig_2,'Color',[0.8,0.7,0.2],'LineWidth',3) %inbetween is 1.
+%load('model_adapt_d_4.000000e-01_a_9.000000e-01.mat')
+log_nrgSig_3 = log(avg_nrgSig_3);
+hold on
+plot(log_nrgSig_3,'Color',[1.0,0.7,0.0],'LineWidth',3) %orange is 0.9 excit
+
+
+%plot autocorrelation
+autocorr_adapt1_E1 = autocorr(ts_adapt_1(1,:));
+autocorr_adapt1_E2 = autocorr(ts_adapt_1(2,:));
+figure
+set(gcf,'Color','w')
+subplot(1,2,1)
+plot(autocorr_adapt1_E1','Color',[54,192,204]./256)
+ylabel('Autocorrelation')
+xlabel('Lags')
+subplot(1,2,2)
+plot(autocorr_adapt1_E2','Color',[203,65,52]./256)
+ylabel('Autocorrelation')
+xlabel('Lags')
+
+%reduce adapt
+autocorr_adapt2_E1 = autocorr(ts_adapt_2(1,:));
+autocorr_adapt2_E2 = autocorr(ts_adapt_2(2,:));
+figure
+set(gcf,'Color','w')
+subplot(1,2,1)
+plot(autocorr_adapt2_E1','Color',[54,192,204]./256)
+ylabel('Autocorrelation')
+xlabel('Lags')
+subplot(1,2,2)
+plot(autocorr_adapt2_E2','Color',[203,65,52]./256)
+ylabel('Autocorrelation')
+xlabel('Lags')
+
+autocorr_excite1_E1 = autocorr(ts_excite_1(1,:));
+autocorr_excite1_E2 = autocorr(ts_excite_1(2,:));
+figure
+set(gcf,'Color','w')
+subplot(1,2,1)
+plot(autocorr_excite1_E1','Color',[54,192,204]./256)
+ylabel('Autocorrelation')
+xlabel('Lags')
+subplot(1,2,2)
+plot(autocorr_excite1_E2','Color',[203,65,52]./256)
+ylabel('Autocorrelation')
+xlabel('Lags')
 
 
 
